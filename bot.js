@@ -8,10 +8,16 @@ const fs = require('fs');
 //-----------------------
 const Discord = require('discord.js');
 
+//------------------
+//- Local Requires -
+//------------------
+const commands = require('./commands.js');
+
 //-----------------------
 //- Application Constants
 //-----------------------
 const client = new Discord.Client();
+const prefix = '_';
 
 // Connected message
 client.on('ready', () => {
@@ -19,8 +25,23 @@ client.on('ready', () => {
 });
 
 client.on('message', (msg) => {
-    if (msg.content === 'ping') {
-        msg.reply('pong');
+    let content = msg.content;
+    let command = content.substr(prefix.length, content.split(' ')[0].length);
+
+    if (command === 'help') {
+        let responseMsg = 'Below is a list of commands followed by a description.\n';
+
+        for (let commandName in commands) {
+            let cmdObj = commands[commandName];
+
+            responseMsg = responseMsg + `\`${cmdObj.format}\`\t${cmdObj.desc}\n`;
+        }
+
+        msg.reply(responseMsg);
+    }
+
+    if (command in commands) {
+        commands[command].action.call(client, msg);
     }
 });
 
