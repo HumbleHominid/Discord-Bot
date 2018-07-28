@@ -6,4 +6,4 @@ bower_components/
 *.swp
 
 # sensitive things
-creds.json
+credentials.json
